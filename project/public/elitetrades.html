@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EliteTrades — Trade Smarter. Profit Bigger.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       VARIABLES & RESET
+    ============================================================ */
+    :root {
+      --bg-deep: #050508;
+      --bg-dark: #07090f;
+      --bg-navy: #090c17;
+      --neon-green: #00FF88;
+      --neon-green-dim: rgba(0,255,136,0.15);
+      --electric-blue: #00D4FF;
+      --electric-blue-dim: rgba(0,212,255,0.15);
+      --text-primary: #f0f4ff;
+      --text-secondary: #8892a8;
+      --text-dim: #50596a;
+      --glass-bg: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.09);
+      --gold: #FFD700;
+      --red: #ff4757;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--neon-green), var(--electric-blue));
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, var(--electric-blue), var(--neon-green));
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+
+    h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: 'Inter', sans-serif; cursor: pointer; border: none; outline: none; }
+    ul { list-style: none; }
+
+    /* ============================================================
+       CANVAS BACKGROUND
+    ============================================================ */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       MOBILE MENU OVERLAY
+    ============================================================ */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5,5,8,0.97);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-menu.open { display: flex; opacity: 1; }
+    .mobile-menu a {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      transition: color 0.25s ease;
+    }
+    .mobile-menu a:hover { color: var(--neon-green); }
+    .mobile-menu-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.25s;
+    }
+    .mobile-menu-close:hover { color: var(--neon-green); }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.35s ease;
+    }
+    .navbar.scrolled {
+      background: rgba(5,5,8,0.88);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(0,255,136,0.1);
+      padding: 0.9rem 2.5rem;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      position: relative;
+      z-index: 1;
+    }
+    .logo-dot {
+      width: 11px; height: 11px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--neon-green), 0 0 22px var(--neon-green);
+      animation: dot-pulse 2.2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes dot-pulse {
+      0%, 100% { box-shadow: 0 0 8px var(--neon-green), 0 0 18px var(--neon-green); }
+      50% { box-shadow: 0 0 16px var(--neon-green), 0 0 36px var(--neon-green), 0 0 55px rgba(0,255,136,0.4); }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.4rem;
+    }
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.3px;
+      transition: color 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .nav-cta {
+      background: var(--neon-green) !important;
+      color: #060709 !important;
+      padding: 0.55rem 1.35rem !important;
+      border-radius: var(--radius-sm) !important;
+      font-weight: 700 !important;
+      font-size: 0.88rem !important;
+      letter-spacing: 0.3px;
+      animation: cta-glow 2.5s ease-in-out infinite;
+    }
+    @keyframes cta-glow {
+      0%, 100% { box-shadow: 0 0 12px rgba(0,255,136,0.45); }
+      50% { box-shadow: 0 0 28px rgba(0,255,136,0.9), 0 0 50px rgba(0,255,136,0.3); }
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 5px;
+      z-index: 201;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 7rem 2.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,136,0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.028) 1px, transparent 1px);
+      background-size: 64px 64px;
+      animation: grid-move 25s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes grid-move {
+      from { background-position: 0 0, 0 0; }
+      to { background-position: 64px 64px, 64px 64px; }
+    }
+
+    .hero-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,255,136,0.08);
+      border: 1px solid rgba(0,255,136,0.25);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--neon-green);
+      margin-bottom: 1.6rem;
+      letter-spacing: 0.3px;
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      animation: blink 1.6s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.5rem;
+    }
+    .neon-gradient {
+      background: linear-gradient(135deg, var(--neon-green) 0%, var(--electric-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 18px rgba(0,255,136,0.35));
+    }
+
+    .hero-sub {
+      font-size: 1.08rem;
+      color: var(--text-secondary);
+      max-width: 460px;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.8rem;
+    }
+
+    .btn-fill {
+      background: linear-gradient(135deg, var(--neon-green) 0%, #00cc6d 100%);
+      color: #060709;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-sm);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 22px rgba(0,255,136,0.3);
+    }
+    .btn-fill:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 40px rgba(0,255,136,0.55);
+    }
+
+    .btn-outline-glass {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-primary);
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-sm);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+    }
+    .btn-outline-glass:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(0,212,255,0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 24px rgba(0,212,255,0.15);
+    }
+
+    .hero-mini-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+    .mini-badge {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.45rem 1rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Hero Chart */
+    .hero-chart-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: float-up-down 4.5s ease-in-out infinite;
+    }
+    @keyframes float-up-down {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-22px); }
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(0,255,136,0.2);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 460px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow:
+        0 0 50px rgba(0,255,136,0.08),
+        0 32px 64px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.09);
+    }
+
+    .chart-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.6rem;
+    }
+    .chart-pair {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+    .chart-price-main {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .chart-change-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--neon-green);
+      background: rgba(0,255,136,0.1);
+      border: 1px solid rgba(0,255,136,0.25);
+      padding: 2px 9px;
+      border-radius: 100px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .signal-box {
+      background: rgba(0,255,136,0.08);
+      border: 1px solid rgba(0,255,136,0.3);
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      text-align: center;
+    }
+    .signal-box .sb-label {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .signal-box .sb-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--neon-green);
+    }
+
+    .candlestick-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      height: 140px;
+      padding: 0 4px;
+      margin-bottom: 1.5rem;
+    }
+    .cw { display: flex; flex-direction: column; align-items: center; flex: 1; }
+    .ck-wick { width: 2px; background: rgba(255,255,255,0.25); flex-shrink: 0; }
+    .ck-body {
+      width: 100%;
+      border-radius: 3px;
+      transform-origin: bottom;
+      animation: grow-candle 0.6s ease-out forwards;
+    }
+    .ck-body.bull { background: linear-gradient(0deg, rgba(0,255,136,0.55), var(--neon-green)); }
+    .ck-body.bear { background: linear-gradient(0deg, rgba(255,71,87,0.55), var(--red)); }
+    @keyframes grow-candle {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    .signal-levels {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .sl-item { text-align: center; }
+    .sl-label {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+    .sl-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+    .sl-val.green { color: var(--neon-green); }
+    .sl-val.red { color: var(--red); }
+    .sl-val.blue { color: var(--electric-blue); }
+    .sl-val.white { color: var(--text-primary); }
+
+    /* ============================================================
+       STATS BAR
+    ============================================================ */
+    .stats-bar {
+      padding: 3.2rem 2.5rem;
+      background: rgba(255,255,255,0.025);
+      border-top: 1px solid rgba(255,255,255,0.055);
+      border-bottom: 1px solid rgba(255,255,255,0.055);
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 1;
+    }
+    .stats-bar-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--neon-green), var(--electric-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-lbl {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================================
+       SHARED SECTION STYLES
+    ============================================================ */
+    .section-wrap {
+      padding: 6rem 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--neon-green);
+      margin-bottom: 1rem;
+    }
+    .section-h2 {
+      font-size: clamp(2rem, 4vw, 2.9rem);
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+    .section-h2::after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 55px; height: 3px;
+      background: linear-gradient(90deg, var(--neon-green), var(--electric-blue));
+      border-radius: 2px;
+      box-shadow: 0 0 12px var(--neon-green);
+    }
+    .section-p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 1.6rem auto 0;
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       GLASS CARD BASE
+    ============================================================ */
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      transition: border-color 0.35s ease, box-shadow 0.35s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+      position: relative;
+      overflow: hidden;
+    }
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 55%);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    .glass-card:hover {
+      border-color: rgba(0,255,136,0.28);
+      box-shadow: 0 18px 55px rgba(0,0,0,0.45), 0 0 28px rgba(0,255,136,0.1);
+    }
+
+    /* ============================================================
+       FEATURES
+    ============================================================ */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feat-icon {
+      width: 50px; height: 50px;
+      background: linear-gradient(135deg, var(--neon-green-dim), var(--electric-blue-dim));
+      border: 1px solid rgba(0,255,136,0.28);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+    .feat-icon svg {
+      width: 22px; height: 22px;
+      stroke: var(--neon-green);
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .feat-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.55rem;
+    }
+    .feat-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ============================================================
+       PRICING
+    ============================================================ */
+    .pricing-wrap {
+      background: var(--bg-dark);
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1060px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .price-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      transition: box-shadow 0.35s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+      position: relative;
+    }
+    .price-card:hover {
+      box-shadow: 0 22px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,255,136,0.1);
+    }
+
+    .price-card.popular {
+      border: 2px solid transparent;
+      background-color: rgba(255,255,255,0.055);
+      background-clip: padding-box;
+      transform: scale(1.05);
+      z-index: 2;
+    }
+    .price-card.popular::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: calc(var(--radius-lg) + 2px);
+      background: linear-gradient(45deg, var(--neon-green), var(--electric-blue), var(--neon-green), var(--electric-blue));
+      background-size: 400% 400%;
+      animation: rotating-border 3.5s ease infinite;
+      z-index: -1;
+    }
+    @keyframes rotating-border {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .popular-chip {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--neon-green), var(--electric-blue));
+      color: #060709;
+      padding: 4px 18px;
+      border-radius: 100px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 800;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+    }
+
+    .plan-tier {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-secondary);
+      margin-bottom: 0.6rem;
+    }
+    .plan-cost {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+      color: var(--text-primary);
+    }
+    .plan-cost sup {
+      font-size: 1.2rem;
+      font-weight: 500;
+      vertical-align: super;
+      color: var(--text-secondary);
+    }
+    .plan-cost sub {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+    .plan-billing {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+    }
+    .plan-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      margin-bottom: 1.5rem;
+    }
+    .plan-features {
+      margin-bottom: 2rem;
+    }
+    .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.48rem 0;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+    .pf-check {
+      width: 18px; height: 18px;
+      background: rgba(0,255,136,0.12);
+      border: 1px solid rgba(0,255,136,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pf-check::after {
+      content: '✓';
+      font-size: 0.6rem;
+      color: var(--neon-green);
+      font-weight: 800;
+    }
+
+    .btn-plan-fill {
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(135deg, var(--neon-green), #00cc6d);
+      color: #060709;
+      border-radius: var(--radius-sm);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 22px rgba(0,255,136,0.3);
+    }
+    .btn-plan-fill:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 42px rgba(0,255,136,0.65);
+    }
+    .btn-plan-ghost {
+      width: 100%;
+      padding: 0.9rem;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius-sm);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+    .btn-plan-ghost:hover {
+      border-color: rgba(0,212,255,0.5);
+      background: rgba(0,212,255,0.05);
+      transform: translateY(-3px);
+    }
+
+    /* ============================================================
+       TESTIMONIALS
+    ============================================================ */
+    .testimonials-wrap {
+      background: var(--bg-navy);
+      position: relative;
+      overflow: hidden;
+    }
+    .testi-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .testi-card {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      transition: transform 0.4s ease, border-color 0.35s ease, box-shadow 0.4s ease;
+    }
+    .testi-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(0,255,136,0.22);
+      box-shadow: 0 22px 55px rgba(0,0,0,0.45);
+    }
+    .testi-quote {
+      font-family: Georgia, serif;
+      font-size: 3.2rem;
+      line-height: 1;
+      color: var(--neon-green);
+      opacity: 0.35;
+      margin-bottom: 0.8rem;
+    }
+    .testi-text {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.72;
+      margin-bottom: 1.4rem;
+    }
+    .testi-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 1.4rem;
+    }
+    .testi-stars span {
+      color: var(--gold);
+      font-size: 1rem;
+    }
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .author-init {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--neon-green), var(--electric-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #060709;
+      flex-shrink: 0;
+    }
+    .author-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+    .author-tag {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    /* ============================================================
+       CTA BANNER
+    ============================================================ */
+    .cta-section {
+      padding: 7rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .cta-blob {
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(0,255,136,0.09) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: blob-breathe 4.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes blob-breathe {
+      0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.55; }
+      50% { transform: translate(-50%,-50%) scale(1.18); opacity: 1; }
+    }
+    .cta-section h2 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .cta-section p {
+      color: var(--text-secondary);
+      font-size: 1.08rem;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    .cta-btn-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .pulse-ring-a, .pulse-ring-b {
+      position: absolute;
+      border: 2px solid var(--neon-green);
+      border-radius: 14px;
+      animation: ring-pulse 2.2s ease-in-out infinite;
+    }
+    .pulse-ring-a { inset: -8px; animation-delay: 0s; }
+    .pulse-ring-b { inset: -18px; animation-delay: 0.5s; border-radius: 22px; }
+    @keyframes ring-pulse {
+      0% { opacity: 0.8; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.12); }
+    }
+    .cta-btn-wrap .btn-fill { position: relative; z-index: 1; font-size: 1.05rem; padding: 1rem 2.6rem; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      padding: 3rem 2.5rem;
+      border-top: 1px solid rgba(255,255,255,0.055);
+      background: var(--bg-dark);
+      position: relative;
+      z-index: 1;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.8rem;
+    }
+    .footer-nav {
+      display: flex;
+      gap: 2.2rem;
+    }
+    .footer-nav a {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      transition: color 0.25s ease;
+    }
+    .footer-nav a:hover { color: var(--neon-green); }
+    .social-row {
+      display: flex;
+      gap: 1.2rem;
+    }
+    .social-btn {
+      width: 42px; height: 42px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .social-btn:hover {
+      background: rgba(0,255,136,0.09);
+      border-color: rgba(0,255,136,0.38);
+      box-shadow: 0 0 20px rgba(0,255,136,0.18);
+      transform: translateY(-3px);
+    }
+    .social-btn svg {
+      width: 17px; height: 17px;
+      fill: var(--text-secondary);
+      transition: fill 0.25s ease;
+    }
+    .social-btn:hover svg { fill: var(--neon-green); }
+    .footer-copy {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    /* ============================================================
+       SCROLL ANIMATIONS
+    ============================================================ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-up:nth-child(2) { transition-delay: 0.1s; }
+    .fade-up:nth-child(3) { transition-delay: 0.2s; }
+    .fade-up:nth-child(4) { transition-delay: 0.3s; }
+    .fade-up:nth-child(5) { transition-delay: 0.4s; }
+    .fade-up:nth-child(6) { transition-delay: 0.5s; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 380px; }
+      .price-card.popular { transform: scale(1); }
+      .testi-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hero-chart-wrap { display: none; }
+      .stats-bar-inner { grid-template-columns: repeat(2, 1fr); }
+      .hero-mini-stats { gap: 0.5rem; }
+      .mini-badge { font-size: 0.75rem; }
+      .hero-btns { gap: 0.8rem; }
+    }
+    @media (max-width: 560px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .hero-btns { flex-direction: column; }
+      .btn-fill, .btn-outline-glass { width: 100%; justify-content: center; }
+      .stats-bar-inner { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .section-wrap { padding: 4.5rem 1.5rem; }
+      .navbar { padding: 1rem 1.5rem; }
+      .navbar.scrolled { padding: 0.75rem 1.5rem; }
+      .checkout-modal { padding: 2rem 1.5rem; }
+    }
+
+    /* ============================================================
+       PAYMENT MODAL
+    ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,5,8,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .modal-overlay.open { display: flex; opacity: 1; }
+    
+    .checkout-modal {
+      background: linear-gradient(165deg, rgba(20,22,35,0.95), rgba(8,10,18,0.98));
+      border: 1px solid rgba(0,255,136,0.2);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 480px;
+      padding: 2.5rem;
+      position: relative;
+      box-shadow: 0 44px 90px rgba(0,0,0,0.8), 0 0 40px rgba(0,255,136,0.1);
+      transform: translateY(30px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-overlay.open .checkout-modal { transform: translateY(0); }
+
+    .modal-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.2rem;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-dim);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.25s;
+    }
+    .modal-close:hover { background: rgba(255,71,87,0.15); color: var(--red); transform: rotate(90deg); }
+
+    .checkout-step-1, .checkout-success { display: block; }
+    .checkout-success { display: none; text-align: center; }
+
+    .checkout-header { margin-bottom: 2rem; }
+    .checkout-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .selected-plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,255,136,0.08);
+      border: 1px solid rgba(0,255,136,0.15);
+      padding: 8px 16px;
+      border-radius: 12px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .plan-name-display { color: var(--text-primary); font-weight: 600; font-size: 0.95rem; }
+    .plan-price-display { color: var(--neon-green); font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+
+    .payment-methods { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 2rem; }
+    .pay-opt {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 1.2rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.3s ease;
+      text-align: left;
+      width: 100%;
+    }
+    .pay-opt:hover {
+      background: rgba(0,255,136,0.05);
+      border-color: rgba(0,255,136,0.3);
+      transform: translateX(5px);
+    }
+    .pay-opt-icon {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .pay-opt-info b { display: block; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 2px; }
+    .pay-opt-info span { font-size: 0.78rem; color: var(--text-dim); }
+
+    .success-icon {
+      width: 80px; height: 80px;
+      background: var(--neon-green);
+      color: #060709;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 0 40px rgba(0,255,136,0.4);
+      animation: success-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes success-pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .success-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--neon-green); }
+    .success-text { color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <!-- BACKGROUND CANVAS -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu-close" id="mobileClose">✕</button>
+    <a href="#home" onclick="closeMobile()">Home</a>
+    <a href="#signals" onclick="closeMobile()">Signals</a>
+    <a href="#results" onclick="closeMobile()">Results</a>
+    <a href="#pricing" onclick="closeMobile()">Pricing</a>
+    <a href="#contact" onclick="closeMobile()">Contact</a>
+    <a href="#pricing" class="btn-fill" onclick="closeMobile()" style="padding:0.8rem 2rem; border-radius:10px; color:#060709; font-family:'Space Grotesk',sans-serif; font-weight:700;">Join Now</a>
+  </div>
+
+  <!-- ======================== NAVBAR ======================== -->
+  <nav class="navbar" id="navbar">
+    <a href="#home" class="nav-logo">
+      <div class="logo-dot"></div>
+      EliteTrades
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#signals">Signals</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#pricing" class="nav-cta">Join Now</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ======================== HERO ======================== -->
+  <section class="hero" id="home">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-inner">
+      <!-- Left Content -->
+      <div class="hero-left" id="heroLeft">
+        <div class="hero-live-badge">
+          <div class="live-dot"></div>
+          Live Signals Active Now
+        </div>
+        <h1>Trade Smarter.<br><span class="neon-gradient">Profit Bigger.</span></h1>
+        <p class="hero-sub">
+          Join 500+ traders receiving real-time forex & crypto signals with 85–88% accuracy. Precision entries, stop-loss & take-profit levels delivered 3–5 times daily.
+        </p>
+        <div class="hero-btns">
+          <a href="#pricing" class="btn-fill">
+            Get Started
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <a href="#results" class="btn-outline-glass">
+            View Results
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </a>
+        </div>
+        <div class="hero-mini-stats">
+          <span class="mini-badge">✅ 94% Accuracy</span>
+          <span class="mini-badge">⚡ 1500+ Pips/Week</span>
+          <span class="mini-badge">📊 3-5 Signals Daily</span>
+          <span class="mini-badge">👥 500+ Members</span>
+        </div>
+      </div>
+
+      <!-- Right Chart -->
+      <div class="hero-chart-wrap" id="heroRight">
+        <div class="hero-card">
+          <div class="chart-top-row">
+            <div>
+              <div class="chart-pair">XAUUSD · Gold</div>
+              <div class="chart-price-main">2,341.50</div>
+              <div class="chart-change-badge">▲ +2.4%</div>
+            </div>
+            <div class="signal-box">
+              <div class="sb-label">Signal</div>
+              <div class="sb-value">BUY ▲</div>
+            </div>
+          </div>
+          <div class="candlestick-row" id="candleRow"></div>
+          <div class="signal-levels">
+            <div class="sl-item">
+              <div class="sl-label">Entry</div>
+              <div class="sl-val blue">2,335.20</div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-label">Stop Loss</div>
+              <div class="sl-val red">2,320.00</div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-label">Take Profit</div>
+              <div class="sl-val green">2,365.00</div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-label">R/R Ratio</div>
+              <div class="sl-val white">1 : 2.0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== STATS BAR ======================== -->
+  <section class="stats-bar" id="results">
+    <div class="stats-bar-inner">
+      <div class="fade-up">
+        <div class="stat-num" data-target="94" data-suffix="%">0%</div>
+        <div class="stat-lbl">Win Rate Accuracy</div>
+      </div>
+      <div class="fade-up">
+        <div class="stat-num" data-target="1500" data-suffix="+">0+</div>
+        <div class="stat-lbl">Pips Per Week</div>
+      </div>
+      <div class="fade-up">
+        <div class="stat-num" data-target="500" data-suffix="+">0+</div>
+        <div class="stat-lbl">Active Members</div>
+      </div>
+      <div class="fade-up">
+        <div class="stat-num" data-target="5" data-prefix="3–">3–0</div>
+        <div class="stat-lbl">Daily Signals</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== FEATURES ======================== -->
+  <section class="section-wrap" id="signals">
+    <div class="section-head fade-up">
+      <div class="section-eyebrow">Why EliteTrades</div>
+      <h2 class="section-h2">Everything You Need to Win</h2>
+      <p class="section-p">Powerful tools and expert guidance so you can trade with confidence and consistent profitability.</p>
+    </div>
+    <div class="features-grid">
+      <div class="glass-card tilt fade-up">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        </div>
+        <div class="feat-title">Live Chart Analysis</div>
+        <div class="feat-desc">Real-time technical analysis on major forex & crypto pairs with detailed entry setups and in-depth market commentary.</div>
+      </div>
+      <div class="glass-card tilt fade-up">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <div class="feat-title">Low Drawdown</div>
+        <div class="feat-desc">Conservative risk management keeps max drawdown under 5%, protecting your capital while steadily growing your account.</div>
+      </div>
+      <div class="glass-card tilt fade-up">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </div>
+        <div class="feat-title">3–5 Daily Signals</div>
+        <div class="feat-desc">Carefully curated high-probability setups every day, filtered to only the best risk-to-reward trade opportunities.</div>
+      </div>
+      <div class="glass-card tilt fade-up">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        </div>
+        <div class="feat-title">Entry / SL / TP Levels</div>
+        <div class="feat-desc">Every signal includes a precise entry price, stop-loss, and multiple take-profit levels with clear R/R ratios.</div>
+      </div>
+      <div class="glass-card tilt fade-up">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="feat-title">Mentor Support</div>
+        <div class="feat-desc">Direct access to experienced traders via private Telegram. Get your questions answered and learn while you earn.</div>
+      </div>
+      <div class="glass-card tilt fade-up">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"></path></svg>
+        </div>
+        <div class="feat-title">Risk Calculator</div>
+        <div class="feat-desc">Built-in tool helps you determine the optimal position size for every trade based on your account balance and risk tolerance.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== PRICING ======================== -->
+  <section class="section-wrap pricing-wrap" id="pricing">
+    <div class="section-head fade-up">
+      <div class="section-eyebrow">Simple Pricing</div>
+      <h2 class="section-h2">Choose Your Plan</h2>
+      <p class="section-p">Start monthly to test the waters or go lifetime for maximum value. All plans include complete signal access.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- Monthly -->
+      <div class="price-card tilt fade-up">
+        <div class="plan-tier">Monthly</div>
+        <div class="plan-cost"><sup>$</sup>60<sub>/mo</sub></div>
+        <div class="plan-billing">Billed monthly · cancel anytime</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="pf-check"></span>3–5 Daily Trade Signals</li>
+          <li><span class="pf-check"></span>Entry, SL &amp; TP Levels</li>
+          <li><span class="pf-check"></span>Private Telegram Group</li>
+          <li><span class="pf-check"></span>Weekly Performance Report</li>
+          <li><span class="pf-check"></span>Risk Management Guide</li>
+        </ul>
+        <button class="btn-plan-ghost">Get Started</button>
+      </div>
+
+      <!-- Lifetime — Popular -->
+      <div class="price-card popular tilt fade-up">
+        <div class="popular-chip">⭐ Most Popular</div>
+        <div class="plan-tier">Lifetime</div>
+        <div class="plan-cost"><sup>$</sup>120<sub> once</sub></div>
+        <div class="plan-billing">One-time payment · lifetime access</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="pf-check"></span>Everything in Monthly</li>
+          <li><span class="pf-check"></span>Priority Signal Alerts</li>
+          <li><span class="pf-check"></span>VIP Telegram Channel</li>
+          <li><span class="pf-check"></span>Live Chart Sessions</li>
+          <li><span class="pf-check"></span>Trading Journal Template</li>
+          <li><span class="pf-check"></span>Lifetime Updates &amp; Access</li>
+        </ul>
+        <button class="btn-plan-fill">Get Lifetime Access</button>
+      </div>
+
+      <!-- Premium Course -->
+      <div class="price-card tilt fade-up">
+        <div class="plan-tier">Premium Course</div>
+        <div class="plan-cost"><sup>$</sup>350<sub> once</sub></div>
+        <div class="plan-billing">Complete trading education package</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="pf-check"></span>Everything in Lifetime</li>
+          <li><span class="pf-check"></span>50+ Video Lessons</li>
+          <li><span class="pf-check"></span>1-on-1 Mentor Session</li>
+          <li><span class="pf-check"></span>Advanced Strategy PDFs</li>
+          <li><span class="pf-check"></span>Prop Firm Preparation</li>
+          <li><span class="pf-check"></span>Certificate of Completion</li>
+        </ul>
+        <button class="btn-plan-ghost">Enroll Now</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================== TESTIMONIALS ======================== -->
+  <section class="section-wrap testimonials-wrap" id="contact">
+    <div class="testi-grid-bg"></div>
+    <div class="section-head fade-up" style="position:relative;">
+      <div class="section-eyebrow">Member Stories</div>
+      <h2 class="section-h2">Traders Love EliteTrades</h2>
+      <p class="section-p">Real results from real members. See what our community is saying about our signals.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card fade-up">
+        <div class="testi-quote">"</div>
+        <div class="testi-text">EliteTrades changed everything for me. I was struggling with consistency until I joined. Now I'm averaging 300+ pips a week just following their signals. Best investment I've ever made as a trader.</div>
+        <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="testi-author">
+          <div class="author-init">MK</div>
+          <div>
+            <div class="author-name">Marcus K.</div>
+            <div class="author-tag">Forex Trader · 8 months</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card fade-up">
+        <div class="testi-quote">"</div>
+        <div class="testi-text">The accuracy is unreal. 94% is not an exaggeration — I've been tracking every signal for 3 months and they consistently deliver. The SL/TP levels are spot on every single time.</div>
+        <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="testi-author">
+          <div class="author-init">SL</div>
+          <div>
+            <div class="author-name">Sarah L.</div>
+            <div class="author-tag">Crypto Trader · 5 months</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card fade-up">
+        <div class="testi-quote">"</div>
+        <div class="testi-text">Got the lifetime plan and it paid for itself in the first week. The Premium Course taught me more in 2 weeks than I learned in 2 years of self-study. Highly recommend to anyone serious about trading.</div>
+        <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="testi-author">
+          <div class="author-init">JR</div>
+          <div>
+            <div class="author-name">James R.</div>
+            <div class="author-tag">Full-time Trader · 1 year</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== CTA BANNER ======================== -->
+  <section class="cta-section">
+    <div class="cta-blob"></div>
+    <div style="position:relative;">
+      <h2>Ready to Start<br><span class="neon-gradient">Winning Trades?</span></h2>
+      <p>Join 500+ traders already profiting with EliteTrades signals. Start today.</p>
+      <div class="cta-btn-wrap">
+        <div class="pulse-ring-a"></div>
+        <div class="pulse-ring-b"></div>
+        <a href="#pricing" class="btn-fill">
+          Join Now — Start Winning
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== PAYMENT MODAL ======================== -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="checkout-modal">
+      <button class="modal-close" onclick="closeCheckout()">✕</button>
+      
+      <!-- Step 1: Selection -->
+      <div id="checkoutStep1" class="checkout-step-1">
+        <div class="checkout-header">
+          <h2 class="checkout-title">Complete Your Order</h2>
+          <div class="selected-plan-badge">
+            <span class="plan-name-display" id="modalPlanName">Lifetime Access</span>
+            <span class="plan-price-display" id="modalPlanPrice">$120</span>
+          </div>
+        </div>
+
+        <p style="font-size:0.85rem; color:var(--text-dim); text-align:center;">Secure payment via encrypted gateway</p>
+
+        <div class="payment-methods">
+          <button class="pay-opt" style="background: rgba(0, 255, 136, 0.05); border-color: rgba(0, 255, 136, 0.2);" onclick="redirectToChat()">
+            <div class="pay-opt-icon" style="background: rgba(0, 255, 136, 0.1); color: var(--neon-green);">💬</div>
+            <div class="pay-opt-info">
+              <b>Direct Pay (Bank / UPI)</b>
+              <span>Chat with us to pay with 0% fees</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Success -->
+      <div id="checkoutSuccess" class="checkout-success">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Payment Confirmed</h2>
+        <p class="success-text">Your transaction was successful! An invite link to the private Telegram group has been sent to your email.</p>
+        <button class="btn-fill" onclick="closeCheckout()" style="width:100%; justify-content:center;">Back to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== FOOTER ======================== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="#home" class="nav-logo">
+        <div class="logo-dot"></div>
+        EliteTrades
+      </a>
+      <nav class="footer-nav">
+        <a href="#home">Home</a>
+        <a href="#signals">Signals</a>
+        <a href="#results">Results</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="social-row">
+        <!-- Telegram -->
+        <a href="#" class="social-btn" aria-label="Telegram">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.269c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.952z"/></svg>
+        </a>
+        <!-- Instagram -->
+        <a href="#" class="social-btn" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <!-- X / Twitter -->
+        <a href="#" class="social-btn" aria-label="X (Twitter)">
+          <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.838L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+      <div class="footer-copy">© 2024 EliteTrades. All rights reserved. Trading involves substantial risk of loss.</div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+  (function () {
+    'use strict';
+
+    /* ── CANVAS PARTICLE SYSTEM ── */
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+
+    function setSize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    setSize();
+    window.addEventListener('resize', () => { setSize(); buildParticles(); });
+
+    const COLORS = ['#00FF88', '#00D4FF', '#00FF88'];
+
+    class Dot {
+      constructor() { this.init(); }
+      init() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 1.4 + 0.3;
+        this.vx = (Math.random() - 0.5) * 0.38;
+        this.vy = (Math.random() - 0.5) * 0.38;
+        this.alpha = Math.random() * 0.45 + 0.08;
+        this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        this.phase = Math.random() * Math.PI * 2;
+        this.phaseSpeed = Math.random() * 0.018 + 0.008;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.phase += this.phaseSpeed;
+        if (this.x < -10 || this.x > W + 10 || this.y < -10 || this.y > H + 10) this.init();
+      }
+      draw() {
+        const a = this.alpha * (0.65 + 0.35 * Math.sin(this.phase));
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function buildParticles() {
+      const count = Math.min(Math.floor((W * H) / 13000), 130);
+      particles = Array.from({ length: count }, () => new Dot());
+    }
+
+    function drawLines() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 95) {
+            ctx.save();
+            ctx.globalAlpha = (1 - d / 95) * 0.09;
+            ctx.strokeStyle = '#00FF88';
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, W, H);
+      drawLines();
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(loop);
+    }
+
+    buildParticles();
+    loop();
+
+    /* ── CANDLESTICK CHART ── */
+    (function buildCandles() {
+      const row = document.getElementById('candleRow');
+      if (!row) return;
+      const data = [
+        { t:'bear', body:22, wt:10, wb:7 },
+        { t:'bull', body:32, wt:11, wb:6 },
+        { t:'bull', body:18, wt:7,  wb:5 },
+        { t:'bear', body:26, wt:9,  wb:8 },
+        { t:'bull', body:42, wt:14, wb:9 },
+        { t:'bear', body:14, wt:6,  wb:7 },
+        { t:'bull', body:38, wt:12, wb:8 },
+        { t:'bull', body:28, wt:9,  wb:6 },
+        { t:'bear', body:16, wt:7,  wb:9 },
+        { t:'bull', body:50, wt:15, wb:10},
+        { t:'bull', body:35, wt:11, wb:7 },
+        { t:'bull', body:44, wt:13, wb:8 },
+      ];
+      row.innerHTML = '';
+      data.forEach((c, i) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'cw';
+        wrap.style.cssText = 'justify-content:flex-end;';
+        wrap.innerHTML = `
+          <div class="ck-wick" style="height:${c.wt}px;"></div>
+          <div class="ck-body ${c.t}" style="height:${c.body}px; animation-delay:${i * 0.06}s;"></div>
+          <div class="ck-wick" style="height:${c.wb}px;"></div>
+        `;
+        row.appendChild(wrap);
+      });
+    })();
+
+    /* ── NAVBAR SCROLL ── */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 55);
+    }, { passive: true });
+
+    /* ── MOBILE MENU ── */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+
+    function openMobile() {
+      hamburger.classList.add('open');
+      mobileMenu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    window.closeMobile = function () {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.contains('open') ? window.closeMobile() : openMobile();
+    });
+    mobileClose.addEventListener('click', window.closeMobile);
+
+    /* ── INTERSECTION OBSERVER — FADE UP ── */
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const fadeObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    fadeEls.forEach(el => fadeObs.observe(el));
+
+    /* ── COUNT-UP ANIMATION ── */
+    const statNums = document.querySelectorAll('.stat-num[data-target]');
+    const countObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !e.target.dataset.done) {
+          e.target.dataset.done = '1';
+          countUp(e.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    statNums.forEach(el => countObs.observe(el));
+
+    function countUp(el) {
+      const target = parseInt(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const prefix = el.dataset.prefix || '';
+      const dur = 2000;
+      const fps = 60;
+      const steps = dur / (1000 / fps);
+      let current = 0;
+      const inc = target / steps;
+      const timer = setInterval(() => {
+        current += inc;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = prefix + Math.floor(current) + suffix;
+      }, 1000 / fps);
+    }
+
+    /* ── 3D TILT EFFECT ── */
+    document.querySelectorAll('.tilt').forEach(card => {
+      const isPopular = card.classList.contains('popular');
+      const baseScale = isPopular ? 1.05 : 1;
+
+      card.addEventListener('mouseenter', () => {
+        card.style.transition = 'transform 0.12s ease';
+      });
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const rotX = ((y - cy) / cy) * -11;
+        const rotY = ((x - cx) / cx) * 11;
+        card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${baseScale + 0.02})`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transition = 'transform 0.55s ease';
+        card.style.transform = `perspective(900px) rotateX(0deg) rotateY(0deg) scale(${baseScale})`;
+      });
+    });
+
+    /* ── PAYMENT MODAL LOGIC ── */
+    const modal = document.getElementById('paymentModal');
+    const step1 = document.getElementById('checkoutStep1');
+    const success = document.getElementById('checkoutSuccess');
+    const modalName = document.getElementById('modalPlanName');
+    const modalPrice = document.getElementById('modalPlanPrice');
+
+    window.openCheckout = function(name, price) {
+      modalName.textContent = name;
+      modalPrice.textContent = price;
+      step1.style.display = 'block';
+      success.style.display = 'none';
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeCheckout = function() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    window.simulatePayment = function(method) {
+      const btn = event.currentTarget || event.target.closest('.pay-opt');
+      if (!btn) return;
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '⚡ Processing...';
+      btn.style.opacity = '0.7';
+      btn.style.pointerEvents = 'none';
+
+      setTimeout(() => {
+        step1.style.display = 'none';
+        success.style.display = 'block';
+        btn.innerHTML = originalHtml;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'all';
+      }, 1500);
+    };
+
+    window.redirectToChat = function() {
+      const plan = modalName.textContent;
+      const price = modalPrice.textContent;
+      const message = encodeURIComponent(`Hi EliteTrades! I want to join the ${plan} for ${price}. Can you send me the payment details for Bank Transfer / UPI?`);
+      
+      // Default to WhatsApp, but you can change this to t.me/yourusername
+      const whatsappNumber = "1234567890"; // Replace with your actual number
+      window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+      
+      // Optionally show a "Check your chat" message on the site
+      step1.style.display = 'none';
+      success.innerHTML = `
+        <div class="success-icon" style="background:var(--electric-blue); shadow:0 0 40px rgba(0,212,255,0.3);">💬</div>
+        <h2 class="success-title" style="color:var(--electric-blue);">Chat Opened</h2>
+        <p class="success-text">We've opened a chat window for you. Please send the message to get payment instructions!</p>
+        <button class="btn-fill" onclick="closeCheckout()" style="width:100%; justify-content:center; background:var(--electric-blue); box-shadow:0 0 22px rgba(0,212,255,0.3);">Back to Site</button>
+      `;
+      success.style.display = 'block';
+    };
+
+    // Attach to all pricing buttons
+    document.querySelectorAll('.btn-plan-ghost, .btn-plan-fill, .nav-cta, .hero-btns .btn-fill, .cta-btn-wrap .btn-fill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const card = btn.closest('.price-card');
+        if (card) {
+          const name = card.querySelector('.plan-tier').textContent;
+          const price = card.querySelector('.plan-cost').textContent.replace('/mo', '').replace(' once', '');
+          window.openCheckout(name, price);
+        } else {
+          // If clicked from hero, nav, or bottom CTA, default to Lifetime
+          window.openCheckout('Lifetime Access', '$120');
+        }
+      });
+    });
+
+    /* ── HERO ENTRANCE ── */
+    window.addEventListener('load', () => {
+      const left = document.getElementById('heroLeft');
+      const right = document.getElementById('heroRight');
+      if (left) {
+        left.style.cssText = 'opacity:0; transform:translateX(-28px); transition:opacity 1s ease, transform 1s ease;';
+        setTimeout(() => { left.style.opacity = '1'; left.style.transform = 'translateX(0)'; }, 150);
+      }
+      if (right) {
+        right.style.cssText = 'opacity:0; transform:translateX(28px); transition:opacity 1s ease 0.28s, transform 1s ease 0.28s;';
+        setTimeout(() => { right.style.opacity = '1'; right.style.transform = 'translateX(0)'; }, 150);
+      }
+    });
+
+  })();
+  </script>
+</body>
+</html>
