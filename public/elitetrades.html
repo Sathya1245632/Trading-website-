@@ -800,10 +800,40 @@
       transition: all 0.3s ease;
     }
     .btn-plan-ghost:hover {
-      border-color: rgba(0,212,255,0.5);
-      background: rgba(0,212,255,0.05);
+      background: rgba(255,255,255,0.08);
+      border-color: var(--electric-blue);
       transform: translateY(-3px);
+      box-shadow: 0 4px 24px rgba(0,212,255,0.15);
     }
+
+    /* ── NEW PRICING REFINEMENTS ── */
+    .price-card.advanced-plan {
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      padding-top: 0;
+      overflow: hidden;
+    }
+    .advanced-plan .card-header {
+      background: linear-gradient(135deg, #1a237e, #0d47a1);
+      margin: 0 -2rem 2rem -2rem;
+      padding: 2.5rem 2rem;
+      position: relative;
+    }
+    .price-card .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .price-card .plan-features li:last-child { border-bottom: none; }
+    
+    .price-card .feature-emoji {
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+
 
     /* ============================================================
        TESTIMONIALS
@@ -1287,8 +1317,8 @@
   <section class="stats-bar" id="results">
     <div class="stats-bar-inner">
       <div class="fade-up">
-        <div class="stat-num" data-target="94" data-suffix="%">0%</div>
-        <div class="stat-lbl">Win Rate Accuracy</div>
+        <div class="stat-num" data-target="88" data-suffix="%">0%</div>
+        <div class="stat-lbl">Weekly Accuracy</div>
       </div>
       <div class="fade-up">
         <div class="stat-num" data-target="1500" data-suffix="+">0+</div>
@@ -1361,61 +1391,86 @@
   <!-- ======================== PRICING ======================== -->
   <section class="section-wrap pricing-wrap" id="pricing">
     <div class="section-head fade-up">
-      <div class="section-eyebrow">Simple Pricing</div>
-      <h2 class="section-h2">Choose Your Plan</h2>
-      <p class="section-p">Start monthly to test the waters or go lifetime for maximum value. All plans include complete signal access.</p>
+      <div class="section-eyebrow">Investment Plans</div>
+      <h2 class="section-h2">Join EliteTrades Today</h2>
+      <p class="section-p">Choose the plan that fits your trading goals. High-accuracy signals and professional education at your fingertips.</p>
     </div>
     <div class="pricing-grid">
 
       <!-- Monthly -->
       <div class="price-card tilt fade-up">
-        <div class="plan-tier">Monthly</div>
-        <div class="plan-cost"><sup>$</sup>60<sub>/mo</sub></div>
-        <div class="plan-billing">Billed monthly · cancel anytime</div>
+        <div style="text-align: center; margin-bottom: 2rem; padding-top: 1rem;">
+          <h3 class="plan-tier" style="font-size: 1.25rem; color: #fff; margin-bottom: 0.5rem; letter-spacing: 1px;">MONTHLY</h3>
+          <div class="plan-cost" style="font-size: 1rem; color: var(--text-secondary);">Billed <span style="color:#fff; font-weight:700;">$60</span> Every Month</div>
+        </div>
         <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li><span class="pf-check"></span>3–5 Daily Trade Signals</li>
-          <li><span class="pf-check"></span>Entry, SL &amp; TP Levels</li>
-          <li><span class="pf-check"></span>Private Telegram Group</li>
-          <li><span class="pf-check"></span>Weekly Performance Report</li>
-          <li><span class="pf-check"></span>Risk Management Guide</li>
+        <ul class="plan-features" style="margin-bottom: 2rem;">
+          <li><span class="feature-emoji">📊</span> Comprehensive Trading Breakdown</li>
+          <li><span class="feature-emoji">✅</span> Detailed Chart Analysis</li>
+          <li><span class="feature-emoji">📉</span> 3-5 High-Quality Signals Daily</li>
+          <li><span class="feature-emoji">🎯</span> 85%-88% Weekly Accuracy</li>
+          <li><span class="feature-emoji">📉</span> Minimal Drawdown, Maximized Gains</li>
+          <li><span class="feature-emoji">💰</span> 100 of Pips per Trade</li>
+          <li><span class="feature-emoji">📍</span> Clear Entry, SL, and TP Levels</li>
+          <li><span class="feature-emoji">🤝</span> Full Support & Guidance</li>
+          <li><span class="feature-emoji">🚀</span> Weekly Target: 1500+ Pips</li>
+          <li><span class="feature-emoji">📈</span> High Risk-Reward Trade Analysis</li>
         </ul>
-        <button class="btn-plan-ghost">Get Started</button>
+        <div style="text-align: center; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 2rem; font-style: italic;">
+          Trade smarter, not harder! 🔥📊
+        </div>
+        <button class="btn-plan-ghost" data-plan="Monthly" data-price="$60">Get Started</button>
       </div>
 
-      <!-- Lifetime — Popular -->
-      <div class="price-card popular tilt fade-up">
-        <div class="popular-chip">⭐ Most Popular</div>
-        <div class="plan-tier">Lifetime</div>
-        <div class="plan-cost"><sup>$</sup>120<sub> once</sub></div>
-        <div class="plan-billing">One-time payment · lifetime access</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li><span class="pf-check"></span>Everything in Monthly</li>
-          <li><span class="pf-check"></span>Priority Signal Alerts</li>
-          <li><span class="pf-check"></span>VIP Telegram Channel</li>
-          <li><span class="pf-check"></span>Live Chart Sessions</li>
-          <li><span class="pf-check"></span>Trading Journal Template</li>
-          <li><span class="pf-check"></span>Lifetime Updates &amp; Access</li>
+      <!-- Advanced — Popular -->
+      <div class="price-card popular advanced-plan tilt fade-up">
+        <div class="card-header">
+          <div class="popular-chip" style="top: 10px;">⭐ RECOMMENDED</div>
+          <div style="text-align: center;">
+            <h3 class="plan-tier" style="font-size: 1.6rem; color: #fff; margin-bottom: 0.3rem;">Advanced</h3>
+            <div style="font-size: 0.7rem; color: var(--neon-green); font-weight: 800; letter-spacing: 2px; text-transform: uppercase;">MOST POPULAR</div>
+          </div>
+        </div>
+        <div class="plan-cost" style="display:none;">$120</div> <!-- Hidden for script scraping -->
+        <ul class="plan-features" style="margin-bottom: 2rem;">
+          <li><span class="feature-emoji">📊</span> Comprehensive Trading Breakdown</li>
+          <li><span class="feature-emoji">✅</span> Detailed Chart Analysis</li>
+          <li><span class="feature-emoji">📉</span> 3-5 High-Quality Signals Daily</li>
+          <li><span class="feature-emoji">🎯</span> 85%-88% Weekly Accuracy</li>
+          <li><span class="feature-emoji">📉</span> Minimal Drawdown, Maximized Gains</li>
+          <li><span class="feature-emoji">💰</span> 100 of Pips per Trade</li>
+          <li><span class="feature-emoji">📍</span> Clear Entry, SL, and TP Levels</li>
+          <li><span class="feature-emoji">🤝</span> Full Support & Guidance</li>
+          <li><span class="feature-emoji">🚀</span> Weekly Target: 1500+ Pips</li>
+          <li><span class="feature-emoji">📈</span> High Risk-Reward Trade Analysis</li>
         </ul>
-        <button class="btn-plan-fill">Get Lifetime Access</button>
+        <div style="text-align: center; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 2rem; font-style: italic;">
+          Trade smarter, not harder! 🔥📊
+        </div>
+        <button class="btn-plan-fill" data-plan="Advanced" data-price="$120">Get Advanced Access</button>
       </div>
 
       <!-- Premium Course -->
       <div class="price-card tilt fade-up">
-        <div class="plan-tier">Premium Course</div>
-        <div class="plan-cost"><sup>$</sup>350<sub> once</sub></div>
-        <div class="plan-billing">Complete trading education package</div>
+        <div style="text-align: center; margin-bottom: 2rem; padding-top: 1rem;">
+          <h3 class="plan-tier" style="font-size: 1.25rem; color: #fff; margin-bottom: 0.5rem; letter-spacing: 1px;">PREMIUM COURSE</h3>
+          <div class="plan-cost" style="font-size: 1rem; color: var(--text-secondary);"><span style="color:#fff; font-weight:700;">$350</span> Lifetime Access</div>
+        </div>
         <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li><span class="pf-check"></span>Everything in Lifetime</li>
-          <li><span class="pf-check"></span>50+ Video Lessons</li>
-          <li><span class="pf-check"></span>1-on-1 Mentor Session</li>
-          <li><span class="pf-check"></span>Advanced Strategy PDFs</li>
-          <li><span class="pf-check"></span>Prop Firm Preparation</li>
-          <li><span class="pf-check"></span>Certificate of Completion</li>
+        <ul class="plan-features" style="margin-bottom: 2rem;">
+          <li style="justify-content: center; background: rgba(0,212,255,0.05); border-radius: 8px; border: 1px dashed rgba(0,212,255,0.2);">
+             <span style="font-weight: 800; color: #00D4FF;">🚀 Ultimate Trading Course</span>
+          </li>
+          <li style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; justify-content: center; border-bottom: none;">🔥 What You'll Get:</li>
+          <li><span class="feature-emoji">✔️</span> One-time payment – Lifetime access 🔑</li>
+          <li><span class="feature-emoji">✔️</span> Complete access to all course materials 📚</li>
+          <li><span class="feature-emoji">✔️</span> 10 in-depth video lessons covering key strategies 🎥</li>
+          <li><span class="feature-emoji">✔️</span> Comprehensive PDFs with breakdowns & insights 📝</li>
+          <li><span class="feature-emoji">✔️</span> Personal mentorship & ongoing support 🤝</li>
+          <li><span class="feature-emoji">✔️</span> Risk Calculator to optimize your trades 🔢</li>
         </ul>
-        <button class="btn-plan-ghost">Enroll Now</button>
+        <div style="height: 38px;"></div>
+        <button class="btn-plan-ghost" data-plan="Premium Course" data-price="$350">Enroll Now</button>
       </div>
 
     </div>
@@ -1825,13 +1880,24 @@
     document.querySelectorAll('.btn-plan-ghost, .btn-plan-fill, .nav-cta, .hero-btns .btn-fill, .cta-btn-wrap .btn-fill').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
+        
+        // Check for data attributes first
+        const dataPlan = btn.getAttribute('data-plan');
+        const dataPrice = btn.getAttribute('data-price');
+        
+        if (dataPlan && dataPrice) {
+          window.openCheckout(dataPlan, dataPrice);
+          return;
+        }
+
         const card = btn.closest('.price-card');
         if (card) {
-          const name = card.querySelector('.plan-tier').textContent;
-          const price = card.querySelector('.plan-cost').textContent.replace('/mo', '').replace(' once', '');
+          const tierEl = card.querySelector('.plan-tier');
+          const costEl = card.querySelector('.plan-cost');
+          const name = tierEl ? tierEl.textContent : 'Trading Plan';
+          const price = costEl ? costEl.textContent.replace('/mo', '').replace(' once', '').replace('Billed ', '').replace(' Every Month', '').replace(' Lifetime Access', '') : '$??';
           window.openCheckout(name, price);
         } else {
-          // If clicked from hero, nav, or bottom CTA, default to Lifetime
           window.openCheckout('Lifetime Access', '$120');
         }
       });
