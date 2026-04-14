@@ -1571,7 +1571,7 @@
       </nav>
       <div class="social-row">
         <!-- Telegram -->
-        <a href="#" class="social-btn" aria-label="Telegram">
+        <a href="https://t.me/guardianfxtrader" target="_blank" class="social-btn" aria-label="Telegram">
           <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.269c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.952z"/></svg>
         </a>
         <!-- Instagram -->
@@ -1837,9 +1837,8 @@
       const price = modalPrice.textContent;
       const message = encodeURIComponent(`Hi EliteTrades! I want to join the ${plan} for ${price}. Can you send me the payment details for Bank Transfer / UPI?`);
       
-      // Default to WhatsApp, but you can change this to t.me/yourusername
-      const whatsappNumber = "1234567890"; // Replace with your actual number
-      window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+      // Redirect to Telegram
+      window.open(`https://t.me/guardianfxtrader?text=${message}`, '_blank');
       
       // Optionally show a "Check your chat" message on the site
       step1.style.display = 'none';
